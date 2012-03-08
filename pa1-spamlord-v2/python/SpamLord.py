@@ -50,12 +50,25 @@ def process_email(name, line):
     
     language_matches = process_language_based_email(name,line)
     matches.extend(language_matches)
+
+    words_for_symbols_matches = process_words_for_symbols_email(name,line)
+    matches.extend(words_for_symbols_matches)
     
     for m in matches:
         email = '%s@%s.edu' % m
         res.append((name,'e',email))
-
     return res
+
+
+def process_words_for_symbols_email(name,line):
+    matches = []
+    pattern = '([a-z]+) at([a-z ]+)dot edu'
+    results = re.findall(pattern,line,re.IGNORECASE)
+    for match in results:
+        beforeAt = match[0].replace("dot",'.').replace(' ','')
+        afterAt = match[1].replace("dot",'.').replace(' ','')
+        matches.append((beforeAt,afterAt))
+    return matches
 
 def process_language_based_email(name,line):
     pattern = '(\w+) [A-Z]+ ([a-z]+) [A-Z]+ edu'
