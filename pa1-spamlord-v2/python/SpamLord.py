@@ -43,11 +43,31 @@ def process_email(name, line):
     res = []
 
     email_pattern = '([\w.]+)\s?@\s?([\w.]+).edu'
-
     matches = re.findall(email_pattern,line, re.IGNORECASE)
 
-    hyphenated_email_pattern = '([a-z-]+)@([a-z-]+)\.[-edu]+'
+    hyphenated_matches = process_hyphenated_email(name,line)
+    matches.extend(hyphenated_matches)
+    
+    language_matches = process_language_based_email(name,line)
+    matches.extend(language_matches)
+    
+    for m in matches:
+        email = '%s@%s.edu' % m
+        res.append((name,'e',email))
 
+    return res
+
+def process_language_based_email(name,line):
+    pattern = '(\w+) [A-Z]+ ([a-z]+) [A-Z]+ edu'
+    matches = []    
+
+    results = re.findall(pattern,line);
+    
+    return results
+
+def process_hyphenated_email(name,line):    
+    matches = []
+    hyphenated_email_pattern = '([.a-z-]+)@([.a-z-]+)\.[-edu]+'
     hyphenated_matches = re.findall(hyphenated_email_pattern,line,re.IGNORECASE);
     
     for hyphenated_match in hyphenated_matches:
@@ -56,12 +76,7 @@ def process_email(name, line):
         afterAt =  hyphenated_match[1].replace('-','')       
         sys.stderr.write('%s ----- %s %s == %s\r\n' % (hyphenated_match,beforeAt,afterAt,name))
         matches.append((beforeAt,afterAt))
-    
-    for m in matches:
-        email = '%s@%s.edu' % m
-        res.append((name,'e',email))
-
-    return res
+    return matches
 
 def process_phone(name, line):
     # note that debug info should be printed to stderr
