@@ -54,19 +54,43 @@ def process_email(name, line):
     words_for_symbols_matches = process_words_for_symbols_email(name,line)
     matches.extend(words_for_symbols_matches)
     
+    javascript_matches = process_javascript_email(name,line)
+    matches.extend(javascript_matches)
+
+    simple_at_word_matches = process_simple_at_word(name,line)
+    matches.extend(simple_at_word_matches)
+    
     for m in matches:
         email = '%s@%s.edu' % m
         res.append((name,'e',email))
     return res
 
+def process_simple_at_word(name,line):
+    pattern = '([a-z]+) at ([a-z.]+).edu'
+    results = re.findall(name,line,re.IGNORECASE)
+    return results
+
+def process_javascript_email(name,line):
+    matches = []
+    pattern = "'([a-z]+)\.edu','([a-z]+)'"
+    results = re.findall(pattern,line,re.IGNORECASE)
+    
+    for match in results:        
+        beforeAt = match[1]
+        afterAt = match[0]
+        sys.stderr.write('%s @ %s' % (beforeAt,afterAt))
+        matches.append((beforeAt,afterAt))
+
+    return matches    
 
 def process_words_for_symbols_email(name,line):
     matches = []
-    pattern = '([a-z]+) at([a-z ]+)dot edu'
+    #pattern = '([a-z]+) at([a-z ]+)dot edu'
+    pattern = '([a-z]+) at([a-z; ]+)(dot |;)edu'
     results = re.findall(pattern,line,re.IGNORECASE)
     for match in results:
-        beforeAt = match[0].replace("dot",'.').replace(' ','')
-        afterAt = match[1].replace("dot",'.').replace(' ','')
+        beforeAt = match[0].replace("dot",'.').replace(';','.').replace(' ','')
+        afterAt = match[1].replace("dot",'.').replace(';','.').replace(' ','')
         matches.append((beforeAt,afterAt))
     return matches
 
@@ -87,7 +111,7 @@ def process_hyphenated_email(name,line):
         #sys.stderr.write(hyphenated_match[1])
         beforeAt = hyphenated_match[0].replace('-','')
         afterAt =  hyphenated_match[1].replace('-','')       
-        sys.stderr.write('%s ----- %s %s == %s\r\n' % (hyphenated_match,beforeAt,afterAt,name))
+        #sys.stderr.write('%s ----- %s %s == %s\r\n' % (hyphenated_match,beforeAt,afterAt,name))
         matches.append((beforeAt,afterAt))
     return matches
 
