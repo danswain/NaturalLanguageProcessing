@@ -66,6 +66,7 @@ def process_email(name, line):
     return res
 
 def process_simple_at_word(name,line):
+    return []
     pattern = '([a-z]+) at ([a-z.]+).edu'
     results = re.findall(name,line,re.IGNORECASE)
     return results
