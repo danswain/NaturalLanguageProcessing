@@ -60,20 +60,96 @@ def process_email(name, line):
     javascript_matches = process_javascript_email(name,line)
     matches.extend(javascript_matches)
 
+    character_encoder_matches = process_character_encoding(name,line)
+    matches.extend(character_encoder_matches)
+
+    followed_by = process_followed_by_email(name,line)
+    matches.extend(followed_by)
+
+    words_for_symbol = process_words_for_symbols(name,line)
+    matches.extend(words_for_symbol)
 
     
     for m in matches:
         email = '%s@%s.edu' % m
         res.append((name,'e',email))
+
+    words_with_dt = process_words_with_dt(name,line)
+    for com in words_with_dt:
+        email = '%s' % com
+        res.append((name,'e',email))
+
     return res
+
+
+def process_words_with_dt(name,line):
+    #ullman
+    #(email to support at gradiance dt com)
+
+    matches = []
+    pattern = '([a-z]+) at ([a-z]+ dt com)'
+
+    results = re.findall(pattern,line,re.IGNORECASE)
+    if len(results) > 0:
+        for match in results:
+            beforeAt = match[0]
+            afterAt = match[1].replace(' ','').replace("dt",'.')
+            matches.append(beforeAt + '@' + afterAt)
+    return matches
+
+def process_words_for_symbols(name,line):
+    #Pal
+    #pal at cs stanford edu
+    matches = []
+    pattern = '([a-z]+) at ([a-z]+ stanford) edu'
+    
+    results = re.findall(pattern,line,re.IGNORECASE)
+    if len(results) > 0:
+        for match in results:
+            beforeAt = match[0]
+            afterAt = match[1].replace(' ','.')
+            matches.append((beforeAt,afterAt))
+    
+    return matches    
+
+def process_followed_by_email(name,line):
+    #Designed for Ouster
+    #ouster (followed by &ldquo;@cs.stanford.edu&rdquo;)
+    #teresa.lynn (followed by "@stanford.edu")
+
+    matches = []
+    pattern = '(?P<before>[a-z.]+) \(followed by (?P<left>"|&ldquo;)@(?P<after>[a-z.]+)\.edu(?P<right>"|&rdquo;)\)'
+
+    results = re.findall(pattern,line,re.IGNORECASE)
+    if len(results) > 0:
+        for match in results:
+            matches.append((match[0],match[2]))
+    
+    return matches    
+
+def process_character_encoding(name,line):
+    #Designed for Levoy
+    #ada&#x40;graphics.stanford.edu
+    
+    matches = []
+    pattern = '([a-z]+)&#x40;([a-z.]+)\.edu'
+    results = re.findall(pattern,line,re.IGNORECASE)
+    
+    return results
+
 
 def process_simple_at_word(name,line):
 
     matches = []        
     pattern = '([a-z]+) at (cs\.stanford)\.edu'
-    results_at = re.findall(name,line,re.IGNORECASE)
-    if(len(results_at) >0):
-        sys.stderr.write('%s -- %s matches\r\n' % (name,len(results_at)))
+    results = re.findall(pattern,line,re.IGNORECASE)
+    if(len(results) >0):
+        if re.match('^<address>Apache',line,re.IGNORECASE):
+            return matches
+        for match in results:
+            beforeAt = match[0]
+            afterAt = match[1]
+            matches.append((beforeAt,afterAt))
 
     
     return matches
