@@ -45,6 +45,9 @@ def process_email(name, line):
     email_pattern = '([\w.]+)\s?@\s?([\w.]+).edu'
     matches = re.findall(email_pattern,line, re.IGNORECASE)
 
+    simple_at_word_matches = process_simple_at_word(name,line)
+    matches.extend(simple_at_word_matches)
+
     hyphenated_matches = process_hyphenated_email(name,line)
     matches.extend(hyphenated_matches)
     
@@ -57,8 +60,7 @@ def process_email(name, line):
     javascript_matches = process_javascript_email(name,line)
     matches.extend(javascript_matches)
 
-    simple_at_word_matches = process_simple_at_word(name,line)
-    matches.extend(simple_at_word_matches)
+
     
     for m in matches:
         email = '%s@%s.edu' % m
@@ -66,10 +68,15 @@ def process_email(name, line):
     return res
 
 def process_simple_at_word(name,line):
-    return []
-    pattern = '([a-z]+) at ([a-z.]+).edu'
-    results = re.findall(name,line,re.IGNORECASE)
-    return results
+
+    matches = []        
+    pattern = '([a-z]+) at (cs\.stanford)\.edu'
+    results_at = re.findall(name,line,re.IGNORECASE)
+    if(len(results_at) >0):
+        sys.stderr.write('%s -- %s matches\r\n' % (name,len(results_at)))
+
+    
+    return matches
 
 def process_javascript_email(name,line):
     matches = []
@@ -79,7 +86,7 @@ def process_javascript_email(name,line):
     for match in results:        
         beforeAt = match[1]
         afterAt = match[0]
-        sys.stderr.write('%s @ %s' % (beforeAt,afterAt))
+        #sys.stderr.write('%s @ %s' % (beforeAt,afterAt))
         matches.append((beforeAt,afterAt))
 
     return matches    
