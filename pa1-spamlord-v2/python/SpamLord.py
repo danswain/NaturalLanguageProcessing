@@ -292,4 +292,5 @@ if __name__ == '__main__':
         print 'usage:\tSpamLord.py <data_dir> <gold_file>'
         sys.exit(0)
     main(sys.argv[1],sys.argv[2])
+    #DAN EDITED
     raw_input('Press Enter to CLOSE')
