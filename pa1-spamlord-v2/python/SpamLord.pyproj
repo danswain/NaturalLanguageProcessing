@@ -10,7 +10,7 @@
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>python</Name>
+    <Name>SpamLord</Name>
     <RootNamespace>python</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>9a7a9026-48c1-4688-9d5d-e5699d47d074</InterpreterId>
