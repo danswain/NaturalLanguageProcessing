@@ -365,3 +365,5 @@ if __name__ == '__main__':
                         output += c.lower()
                 print output,
             infile.close()
+    #DAN EDITED
+    raw_input('Press Enter to CLOSE')

@@ -12,6 +12,10 @@
     <OutputPath>.</OutputPath>
     <Name>PorterStemmer</Name>
     <RootNamespace>PorterStemmer</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>stem.txt</CommandLineArguments>
+    <InterpreterPath />
+    <InterpreterArguments />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +27,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PorterStemmer.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="stem.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>
